@@ -102,12 +102,13 @@ discordClient.on('message', async msg => {
             skillList = skillNames.join(', ');
             msg.reply('skills refreshed');
         } else if (command.command === null) {
-            if ('sometghing' in skillDefinitions) {
-                let response = skillDefinitions[command];
-                response = `**${command}** ` + response;
+            const text = msg.content.substring(prefix.length).trim()
+            if (text in skillDefinitions) {
+                let response = skillDefinitions[text];
+                response = `**${text}** ` + response;
                 msg.reply(response);
             } else {
-                discordClient.users.get(author_id).send('invalid command');
+                msg.author.send('invalid command');
             }
         }
     } catch(err) {
