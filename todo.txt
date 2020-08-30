@@ -1,0 +1,3 @@
+Check Guild for location of skills sheet and the prefix
+set up storage by guild id
+store prefix and character sheet id
