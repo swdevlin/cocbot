@@ -5,8 +5,78 @@ const {
     parseCommand, determineCommand,
     standardRoll, reload,
     groupCheck, bonusRoll,
-    penaltyRoll
+    penaltyRoll, mySkills
 } = require('../commandparser');
+
+describe('Determine Command', function () {
+    describe('check command mapping', function () {
+        it('set skill command', function () {
+            let res = determineCommand('set skill value');
+            res.should.eql(setSkill);
+        });
+
+        it('skills command', function () {
+            let res = determineCommand('skills');
+            res.should.eql(skills);
+        });
+
+        it('myskills command', function () {
+            let res = determineCommand('myskills');
+            res.should.eql(mySkills);
+        });
+
+        it('reload command', function () {
+            let res = determineCommand('reload');
+            res.should.eql(reload);
+        });
+
+        it('group luck check', function () {
+            let res = determineCommand('group luck');
+            res.should.eql(groupCheck);
+        });
+
+        it('group any skill not supported', function () {
+            let res = determineCommand('group stealth');
+            (res === null).should.be.true
+        });
+
+        it('standard roll', function () {
+            let res = determineCommand('s luck');
+            res.should.eql(standardRoll);
+
+            res = determineCommand('s 90');
+            res.should.eql(standardRoll);
+        });
+
+        it('bonus roll', function () {
+            let res = determineCommand('b luck');
+            res.should.eql(bonusRoll);
+
+            res = determineCommand('b 90');
+            res.should.eql(bonusRoll);
+
+            res = determineCommand('B luck');
+            res.should.eql(bonusRoll);
+
+            res = determineCommand('B 90');
+            res.should.eql(bonusRoll);
+        });
+
+        it('penalty roll', function () {
+            let res = determineCommand('p luck');
+            res.should.eql(penaltyRoll);
+
+            res = determineCommand('p 90');
+            res.should.eql(penaltyRoll);
+
+            res = determineCommand('P luck');
+            res.should.eql(penaltyRoll);
+
+            res = determineCommand('P 90');
+            res.should.eql(penaltyRoll);
+        });
+    });
+});
 
 describe('Command parser', function () {
     describe('parseCommand()', function () {
@@ -62,73 +132,18 @@ describe('Command parser', function () {
         });
     });
 
+
+    describe('myskills()', function () {
+        it('myskills command', function () {
+            let res = mySkills('myskills');
+            res.should.eql({command: 'myskills', parameters: {}});
+        });
+    });
+
     describe('skills()', function () {
         it('skills command', function () {
             let res = skills('skills');
             res.should.eql({command: 'skills', parameters: {}});
-        });
-    });
-
-    describe('determineCommand()', function () {
-        it('set skill command', function () {
-            let res = determineCommand('set skill value');
-            res.should.eql(setSkill);
-        });
-
-        it('skills command', function () {
-            let res = determineCommand('skills');
-            res.should.eql(skills);
-        });
-
-        it('reload command', function () {
-            let res = determineCommand('reload');
-            res.should.eql(reload);
-        });
-
-        it('group luck check', function () {
-            let res = determineCommand('group luck');
-            res.should.eql(groupCheck);
-        });
-
-        it('group any skill not supported', function () {
-            let res = determineCommand('group stealth');
-            (res === null).should.be.true
-        });
-
-        it('standard roll', function () {
-            let res = determineCommand('s luck');
-            res.should.eql(standardRoll);
-
-            res = determineCommand('s 90');
-            res.should.eql(standardRoll);
-        });
-
-        it('bonus roll', function () {
-            let res = determineCommand('b luck');
-            res.should.eql(bonusRoll);
-
-            res = determineCommand('b 90');
-            res.should.eql(bonusRoll);
-
-            res = determineCommand('B luck');
-            res.should.eql(bonusRoll);
-
-            res = determineCommand('B 90');
-            res.should.eql(bonusRoll);
-        });
-
-        it('penalty roll', function () {
-            let res = determineCommand('p luck');
-            res.should.eql(penaltyRoll);
-
-            res = determineCommand('p 90');
-            res.should.eql(penaltyRoll);
-
-            res = determineCommand('P luck');
-            res.should.eql(penaltyRoll);
-
-            res = determineCommand('P 90');
-            res.should.eql(penaltyRoll);
         });
     });
 

@@ -42,6 +42,10 @@ const reload = (postedText) => {
     return {command: 'reload', parameters: {}};
 };
 
+const mySkills = (postedText) => {
+    return {command: 'myskills', parameters: {}};
+};
+
 const determineCommand = (postedText) => {
     const lowerText = postedText.toLowerCase();
     if (lowerText.startsWith('set'))
@@ -58,6 +62,8 @@ const determineCommand = (postedText) => {
         return bonusRoll;
     else if (lowerText.startsWith('p '))
         return penaltyRoll;
+    else if (lowerText.startsWith('myskills'))
+        return mySkills;
     else
         return null;
 }
@@ -115,3 +121,4 @@ exports.standardRoll = standardRoll;
 exports.bonusRoll = bonusRoll;
 exports.penaltyRoll = penaltyRoll;
 exports.reload = reload;
+exports.mySkills = mySkills;
