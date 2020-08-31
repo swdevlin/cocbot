@@ -1,12 +1,13 @@
 // Run dotenv
 require('dotenv').config();
 const yaml = require('js-yaml');
-const fs   = require('fs');
-const { Pool, Client } = require('pg');
+const fs = require('fs');
+const { Pool } = require('pg');
 const databasePool = new Pool();
 const {skillCheck} = require('./dieroller');
 
 const Discord = require('discord.js');
+const {mySkills} = require("./commands/myskills");
 const {parseCommand} = require("./commandparser");
 const discordClient = new Discord.Client();
 
@@ -45,19 +46,10 @@ discordClient.on('message', async msg => {
                 msg.reply(`${command.parameters.skillName} set to ${command.parameters.score}`);
             }
         } else if (command.command === 'myskills') {
-            const sql = 'select skill_name, score from investigator_skill where guild_id = $1 and user_id = $2 order by skill_name';
-            const res = await databasePool.query(
-                sql,
-                [guild_id, author_id]
-            );
-            if (res.rows.length > 0) {
-                let skills = [];
-                for (let skill of res.rows) {
-                    skills.push(`${skill.skill_name} ${skill.score}`);
-                }
-                msg.author.send(skills.join(', '));
-            } else {
-                msg.author.send('no skills registered');
+            try {
+                mySkills(msg);
+            } catch(err) {
+                console.log(err);
             }
         } else if (command.command === 'roll') {
             if (command.parameters.score === null && command.parameters.skillName === null) {
