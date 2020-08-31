@@ -107,7 +107,7 @@ const penaltyRoll = (postedText) => {
 }
 
 const groupCheck = (postedText) => {
-    const skill = postedText.substring(6);
+    // const skill = postedText.substring(6);
     return {command: 'group', parameters: {skillName: 'luck'}};
 };
 

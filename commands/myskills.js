@@ -1,21 +1,21 @@
 const db = require('../db');
 
-const mySkills = async (msg) => {
+const mySkills = async ({author, channel}) => {
   const sql = 'select skill_name, score from investigator_skill where guild_id = $1 and user_id = $2 order by skill_name';
-  const author_id = msg.author.id;
-  const guild_id = msg.channel.guild.id;
+  const author_id = author.id;
+  const guild_id = channel.guild.id;
   const res = await db.query(
     sql,
     [guild_id, author_id]
   );
   if (res.rows.length > 0) {
     let skills = [];
-    for (let skill of res.rows) {
-      skills.push(`${skill.skill_name} ${skill.score}`);
+    for (let {score, skill_name} of res.rows) {
+      skills.push(`${skill_name} ${score}`);
     }
-    msg.author.send(skills.join(', '));
+    await author.send(skills.join(', '));
   } else {
-    msg.author.send('no skills registered');
+    await author.send('no skills registered');
   }
 };
 
