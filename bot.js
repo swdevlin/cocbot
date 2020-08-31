@@ -7,6 +7,7 @@ const databasePool = new Pool();
 const {skillCheck} = require('./dieroller');
 
 const Discord = require('discord.js');
+const {skillDefinition} = require("./commands/skilldefinition");
 const {groupSkillCheck} = require("./commands/groupskillcheck");
 const {mySkills} = require("./commands/myskills");
 const {parseCommand} = require("./commandparser");
@@ -91,14 +92,7 @@ discordClient.on('message', async msg => {
             skillList = skillNames.join(', ');
             await msg.reply('skills refreshed');
         } else if (command.command === null) {
-            const text = msg.content.substring(prefix.length).trim()
-            if (text in skillDefinitions) {
-                let response = skillDefinitions[text];
-                response = `**${text}** ` + response;
-                await msg.reply(response);
-            } else {
-                await msg.author.send('invalid command');
-            }
+            await skillDefinition(msg, prefix, skillDefinitions);
         }
     } catch(err) {
         console.log(err);
@@ -106,4 +100,4 @@ discordClient.on('message', async msg => {
     }
 });
 
-await discordClient.login(process.env.DISCORD_TOKEN);
+discordClient.login(process.env.DISCORD_TOKEN);
