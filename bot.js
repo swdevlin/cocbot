@@ -7,6 +7,7 @@ const databasePool = new Pool();
 const {skillCheck} = require('./dieroller');
 
 const Discord = require('discord.js');
+const {groupSkillCheck} = require("./commands/groupskillcheck");
 const {mySkills} = require("./commands/myskills");
 const {parseCommand} = require("./commandparser");
 const discordClient = new Discord.Client();
@@ -80,12 +81,7 @@ discordClient.on('message', async msg => {
                 msg.reply(`**${dieResult.result}** (roll of ${dieResult.roll}) against a check of ${command.parameters.score}`);
             }
         } else if (command.command === 'group') {
-            const sql = 'select user_id, score from investigator_skill where guild_id = $1 and skill_name = $2 order by score limit 1';
-            const res = await databasePool.query(sql, [guild_id, 'luck']);
-            if (res.rows.length > 0)
-                msg.reply(`<@${res.rows[0].user_id}> please make a luck check`);
-            else
-                msg.reply('No luck skills registered');
+            groupSkillCheck(msg);
         } else if (command.command === 'skills') {
             msg.reply(skillList);
         } else if (command.command === 'reload') {
