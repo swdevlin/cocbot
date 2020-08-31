@@ -25,36 +25,36 @@ discordClient.on('ready', () => {
 
 discordClient.on('message', async msg => {
     // ignore our own messages
-    if (msg.author.username + '#' + msg.author.discriminator === discordClient.user.tag)
+    if (`${msg.author.username}#${msg.author.discriminator}` === discordClient.user.tag)
         return;
 
     if (!msg.content.startsWith(prefix))
         return;
 
     try {
-        const author_id = msg.author.id;
-        const guild_id = msg.channel.guild.id;
+        const {id: author_id} = msg.author;
+        const {id: guild_id} = msg.channel.guild;
         const command = parseCommand(prefix, msg.content);
         if (command.command === 'set') {
             if (command.parameters.score === null) {
-                msg.reply('Skill must have an integer score');
+                await msg.reply('Skill must have an integer score');
             } else {
                 const sql = 'insert into investigator_skill (guild_id, user_id, skill_name, score) values ($1,$2,$3,$4) on conflict (guild_id, user_id, skill_name) do update set score = $4';
-                const res = await databasePool.query(
+                await databasePool.query(
                     sql,
                     [guild_id, author_id, command.parameters.skillName, command.parameters.score]
                 );
-                msg.reply(`${command.parameters.skillName} set to ${command.parameters.score}`);
+                await msg.reply(`${command.parameters.skillName} set to ${command.parameters.score}`);
             }
         } else if (command.command === 'myskills') {
             try {
-                mySkills(msg);
+                await mySkills(msg);
             } catch(err) {
                 console.log(err);
             }
         } else if (command.command === 'roll') {
             if (command.parameters.score === null && command.parameters.skillName === null) {
-                msg.reply('invalid format');
+                await msg.reply('invalid format');
             } else if (command.parameters.score === null) {
                 const sql = 'select score from investigator_skill where guild_id = $1 and user_id = $2 and skill_name = $3';
                 const res = await databasePool.query(
@@ -68,9 +68,9 @@ discordClient.on('message', async msg => {
                         command.parameters.bonusDice,
                         command.parameters.penaltyDice
                     );
-                    msg.reply(`**${dieResult.result}** (roll of ${dieResult.roll}) on a **${command.parameters.skillName}** check of ${score}`);
+                    await msg.reply(`**${dieResult.result}** (roll of ${dieResult.roll}) on a **${command.parameters.skillName}** check of ${score}`);
                 } else {
-                    msg.reply(`**${command.parameters.skillName}** is not a skill the investigator knows`);
+                    await msg.reply(`**${command.parameters.skillName}** is not a skill the investigator knows`);
                 }
             } else {
                 const dieResult = skillCheck(
@@ -78,31 +78,31 @@ discordClient.on('message', async msg => {
                     command.parameters.bonusDice,
                     command.parameters.penaltyDice
                 );
-                msg.reply(`**${dieResult.result}** (roll of ${dieResult.roll}) against a check of ${command.parameters.score}`);
+                await msg.reply(`**${dieResult.result}** (roll of ${dieResult.roll}) against a check of ${command.parameters.score}`);
             }
         } else if (command.command === 'group') {
-            groupSkillCheck(msg);
+            await groupSkillCheck(msg);
         } else if (command.command === 'skills') {
-            msg.reply(skillList);
+            await msg.reply(skillList);
         } else if (command.command === 'reload') {
             skillDefinitions = yaml.safeLoad(fs.readFileSync('skills.yaml', 'utf8'));
             skillNames = Object.keys(skillDefinitions);
             skillList = skillNames.join(', ');
-            msg.reply('skills refreshed');
+            await msg.reply('skills refreshed');
         } else if (command.command === null) {
             const text = msg.content.substring(prefix.length).trim()
             if (text in skillDefinitions) {
                 let response = skillDefinitions[text];
                 response = `**${text}** ` + response;
-                msg.reply(response);
+                await msg.reply(response);
             } else {
-                msg.author.send('invalid command');
+                await msg.author.send('invalid command');
             }
         }
     } catch(err) {
         console.log(err);
-        msg.reply(err);
+        await msg.reply(err);
     }
 });
 
-discordClient.login(process.env.DISCORD_TOKEN);
+await discordClient.login(process.env.DISCORD_TOKEN);
