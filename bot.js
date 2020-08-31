@@ -18,7 +18,7 @@ let skillNames = Object.keys(skillDefinitions);
 skillNames.sort();
 let skillList = skillNames.join(', ');
 
-const prefix = 'coc';
+const prefix = process.env.COCBOT_PREFIX || 'coc';
 
 discordClient.on('ready', () => {
     console.log(`Logged in as ${discordClient.user.tag}!`);
