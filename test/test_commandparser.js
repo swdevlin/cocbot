@@ -115,9 +115,14 @@ describe('Command parser', function () {
       res.should.eql({command: 'set', parameters: {skillName: 'skill', score: null}});
     });
 
-    it('missing score is null', function () {
+    it('should set a missing score to null', function () {
       let res = setSkill('set skill');
       res.should.eql({command: 'set', parameters: {skillName: 'skill', score: null}});
+    });
+
+    it('should convert everything to lower case', function () {
+      let res = setSkill('set skILl 76');
+      res.should.eql({command: 'set', parameters: {skillName: 'skill', score: 76}});
     });
 
     it('no parameters has both null', function () {
@@ -151,6 +156,19 @@ describe('Command parser', function () {
   describe('standardRoll()', function () {
     it('skill name no score', function () {
       let res = standardRoll('s skill');
+      res.should.eql({
+        command: 'roll',
+        parameters: {
+          skillName: 'skill',
+          score: null,
+          bonusDice: 0,
+          penaltyDice: 0
+        }
+      });
+    });
+
+    it('should convert skill name to lower case', function () {
+      let res = standardRoll('s skILl');
       res.should.eql({
         command: 'roll',
         parameters: {

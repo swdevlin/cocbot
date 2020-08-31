@@ -1,5 +1,5 @@
 const parseCommand = (prefix, postedText) => {
-    let command = postedText.substring(prefix.length).trim();
+    let command = postedText.substring(prefix.length).trim().toLowerCase();
     const func = determineCommand(command);
     if (func)
         return func(command);
@@ -12,7 +12,7 @@ const parseCommand = (prefix, postedText) => {
 };
 
 const setSkill = (postedText) => {
-    let tokens = postedText.substring(4).split(' ');
+    let tokens = postedText.substring(4).toLowerCase().split(' ');
     let params;
     if (tokens.length === 1 && tokens[0] === '') {
         params = {
@@ -69,7 +69,7 @@ const determineCommand = (postedText) => {
 }
 
 const standardRoll = (postedText) => {
-    const skillOrScore = postedText.substring(2);
+    const skillOrScore = postedText.substring(2).toLowerCase();
     let score = parseInt(skillOrScore);
     let params;
     if (Number.isNaN(score)) {
