@@ -33,7 +33,8 @@ discordClient.on('message', async msg => {
 
     try {
         const {id: author_id} = msg.author;
-        const {id: guild_id} = msg.channel.guild;
+        const {guild} = msg.channel;
+        const {id: guild_id} = guild;
         const command = parseCommand(prefix, msg.content);
         if (command.command === 'set') {
             if (command.parameters.score === null) {
@@ -62,7 +63,7 @@ discordClient.on('message', async msg => {
                     [guild_id, author_id, command.parameters.skillName]
                 );
                 if (res.rows.length > 0) {
-                    score = res.rows[0].score;
+                    let score = res.rows[0].score;
                     const dieResult = skillCheck(
                         score,
                         command.parameters.bonusDice,
