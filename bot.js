@@ -32,10 +32,10 @@ discordClient.on('message', async msg => {
     if (!msg.content.startsWith(prefix))
         return;
 
+    const {id: author_id} = msg.author;
+    const {guild} = msg.channel;
+    const {id: guild_id} = guild;
     try {
-        const {id: author_id} = msg.author;
-        const {guild} = msg.channel;
-        const {id: guild_id} = guild;
         const command = parseCommand(prefix, msg.content);
         if (command.command === 'set') {
             if (command.parameters.score === null) {
@@ -97,6 +97,8 @@ discordClient.on('message', async msg => {
     } catch(err) {
         console.log(err);
         await msg.reply(err);
+    } finally {
+        console.log(`${guild_id} ${author_id} ${msg.content}`);
     }
 });
 
