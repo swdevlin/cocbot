@@ -1,5 +1,6 @@
-const chai = require('chai'),
-  should = chai.should();
+const chai = require('chai');
+chai.should();
+
 const {
   skills, setSkill,
   parseCommand, determineCommand,

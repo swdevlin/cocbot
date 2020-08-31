@@ -1,5 +1,5 @@
-const chai = require('chai'),
-    should = chai.should();
+const chai = require('chai');
+chai.should();
 
 const {skillCheck, computeResult, penaltyRoll, bonusRoll, rolls} = require('../dieroller');
 

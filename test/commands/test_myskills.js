@@ -9,7 +9,7 @@ const {mySkills} = require("../../commands/myskills");
 
 const db = require('../../db');
 
-describe('mySkills()', function () {
+describe('mySkills', function () {
 
   before(async function () {
     const client = await db.getClient();
