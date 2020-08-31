@@ -15,10 +15,10 @@ describe('mySkills', function () {
     const client = await db.getClient();
     try {
       const sql = 'insert into investigator_skill (guild_id, user_id, skill_name, score) values ($1, $2, $3, $4)';
-      let res = await client.query( sql, ['test', 'user1', 'skill 1', 40] );
-      res = await client.query( sql, ['test', 'user1', 'skill 2', 50] );
-      res = await client.query( sql, ['test', 'user2', 'skill 2', 60] );
-      res = await client.query( sql, ['test', 'user1', 'skill 4', 70] );
+      await client.query( sql, ['test', 'user1', 'skill 1', 40] );
+      await client.query( sql, ['test', 'user1', 'skill 2', 50] );
+      await client.query( sql, ['test', 'user2', 'skill 2', 60] );
+      await client.query( sql, ['test', 'user1', 'skill 4', 70] );
     } catch (err) {
       console.log(err);
     } finally {
@@ -98,7 +98,7 @@ describe('mySkills', function () {
   after(async function () {
     const sql = 'delete from investigator_skill where guild_id = $1';
     try {
-      let res = await db.query( sql, ['test'] );
+      await db.query( sql, ['test'] );
     } catch(err) {
       console.log(err);
     }
