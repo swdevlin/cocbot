@@ -7,6 +7,7 @@ const databasePool = new Pool();
 const {skillCheck} = require('./dieroller');
 
 const Discord = require('discord.js');
+const {setSkill} = require("./commands/setskill");
 const {skillDefinition} = require("./commands/skilldefinition");
 const {groupSkillCheck} = require("./commands/groupskillcheck");
 const {mySkills} = require("./commands/myskills");
@@ -38,22 +39,10 @@ discordClient.on('message', async msg => {
     try {
         const command = parseCommand(prefix, msg.content);
         if (command.command === 'set') {
-            if (command.parameters.score === null) {
-                await msg.reply('Skill must have an integer score');
-            } else {
-                const sql = 'insert into investigator_skill (guild_id, user_id, skill_name, score) values ($1,$2,$3,$4) on conflict (guild_id, user_id, skill_name) do update set score = $4';
-                await databasePool.query(
-                    sql,
-                    [guild_id, author_id, command.parameters.skillName, command.parameters.score]
-                );
-                await msg.reply(`${command.parameters.skillName} set to ${command.parameters.score}`);
-            }
+            const response = await setSkill(guild_id, author_id, command);
+            await msg.reply(response);
         } else if (command.command === 'myskills') {
-            try {
-                await mySkills(msg);
-            } catch(err) {
-                console.log(err);
-            }
+            await mySkills(msg);
         } else if (command.command === 'roll') {
             if (command.parameters.score === null && command.parameters.skillName === null) {
                 await msg.reply('invalid format');
