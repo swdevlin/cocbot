@@ -1,15 +1,12 @@
-const path = require('path');
-
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
 const chai = require('chai');
 chai.should();
-
-const {groupSkillCheck} = require("../../commands/groupskillcheck");
+const expect = chai.expect;
+const sinon = require('sinon');
 
 const db = require('../../db');
+const GroupSkillCheck = require("../../commands/groupskillcheck");
 
-describe('group', function () {
+describe('GroupSkillCheck', function () {
 
   before(async function () {
     const client = await db.getClient();
@@ -28,41 +25,53 @@ describe('group', function () {
 
   it('should tell the user with the lowest luck to make a luck roll', async function () {
     let msg = {
-      theReply: null,
-      reply: function (text) {
-        this.theReply = text;
+      author: {
+        id: 'user1',
+        send: sinon.stub().resolves('ok'),
       },
       channel: {
         guild: {
           id: 'test'
         }
       },
+      reply: sinon.stub().resolves('ok'),
+      content: 'coc group'
     };
     try {
-      await groupSkillCheck(msg);
-      msg.theReply.should.equal('<@user3> please make a luck check');
+      const command = new GroupSkillCheck('coc', msg);
+      await command.do();
+      expect(msg.reply.called).to.be.ok;
+      const expectedText = '<@user3> please make a luck check';
+      expect(msg.reply.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 
   it('should say no luck registered if no luck', async function () {
     let msg = {
-      theReply: null,
-      reply: function (text) {
-        this.theReply = text;
+      author: {
+        id: 'user1',
+        send: sinon.stub().resolves('ok'),
       },
       channel: {
         guild: {
           id: 'test2'
         }
       },
+      reply: sinon.stub().resolves('ok'),
+      content: 'coc group'
     };
     try {
-      await groupSkillCheck(msg);
-      msg.theReply.should.equal('No investigator has a registered luck skill');
+      const command = new GroupSkillCheck('coc', msg);
+      await command.do();
+      expect(msg.reply.called).to.be.ok;
+      const expectedText = 'No investigator has a registered luck skill';
+      expect(msg.reply.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 

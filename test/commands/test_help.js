@@ -1,13 +1,10 @@
-const path = require('path');
-const fs = require('fs');
-
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
 const chai = require('chai');
-const yaml = require("js-yaml");
 chai.should();
+const expect = chai.expect;
+const sinon = require('sinon');
 
-const {cocBotHelp} = require("../../commands/help");
+
+const Help = require("../../commands/help");
 
 describe('help', function () {
 
@@ -22,13 +19,27 @@ describe('help', function () {
       '**P** `skillname` or `score` : two penalty dice skill check using saved skill or a score',
       '**help** : this command',
     ];
-    const expected = commandList.join('\n');
-    const command = {command: 'help', parameters: {}};
+    const expectedHelp = commandList.join('\n');
+    let msg = {
+      author: {
+        id: 'user1',
+      },
+      channel: {
+        guild: {
+          id: 'test'
+        }
+      },
+      content: 'coc help',
+      reply: sinon.stub().resolves('ok')
+    };
+    const help = new Help('coc', msg);
     try {
-      const response = await cocBotHelp(command);
-      response.should.equal(expected);
+      await help.do();
+      expect(msg.reply.called).to.be.ok;
+      expect(msg.reply.calledWith(expectedHelp)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 

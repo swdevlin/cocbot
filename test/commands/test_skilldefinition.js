@@ -1,84 +1,86 @@
-const path = require('path');
-const fs = require('fs');
-
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
 const chai = require('chai');
-const yaml = require("js-yaml");
 chai.should();
+const expect = chai.expect;
+const sinon = require('sinon');
 
-const {skillDefinition} = require("../../commands/skilldefinition");
-
-let skillDefinitions;
+const SkillDefinition = require("../../commands/skilldefinition");
+const {skillDefinitions} = require("../../skills");
 
 describe('skillDefinition', function () {
-
-  before(async function () {
-    const skillsFile = path.resolve(__dirname, '../../skills.yaml')
-    try {
-      skillDefinitions = yaml.safeLoad(fs.readFileSync(skillsFile, 'utf8'));
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
   it('should find a match for stealth', async function () {
     let msg = {
+      author: {
+        id: 'user1',
+      },
+      channel: {
+        guild: {
+          id: 'test'
+        }
+      },
       content: 'coc stealth',
-      replyText: null,
-      reply: function(text) {
-        this.replyText = text;
-      }
+      reply: sinon.stub().resolves('ok')
     };
     try {
-      await skillDefinition(msg, 'coc', skillDefinitions);
-      msg.replyText.should.equal('**stealth** ' + skillDefinitions['stealth']);
+      const command = new SkillDefinition('coc', msg);
+      await command.do();
+      expect(msg.reply.called).to.be.ok;
+      const expectedText = '**stealth** ' + skillDefinitions['stealth'];
+      expect(msg.reply.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 
   it('case should be insensitive', async function () {
     let msg = {
+      author: {
+        id: 'user1',
+      },
+      channel: {
+        guild: {
+          id: 'test'
+        }
+      },
       content: 'coc stEAlth',
-      replyText: null,
-      reply: function(text) {
-        this.replyText = text;
-      }
+      reply: sinon.stub().resolves('ok')
     };
     try {
-      await skillDefinition(msg, 'coc', skillDefinitions);
-      msg.replyText.should.equal('**stealth** ' + skillDefinitions['stealth']);
+      const command = new SkillDefinition('coc', msg);
+      await command.do();
+      expect(msg.reply.called).to.be.ok;
+      const expectedText = '**stealth** ' + skillDefinitions['stealth'];
+      expect(msg.reply.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 
-  it('should tell the user the command is invalid if there is no matching skill', async function () {
+  it('error message if skill does not exist', async function () {
     let msg = {
       author: {
         id: 'user1',
-        send: function (text) {
-          this.sendText = text;
-        },
-        sendText: null,
+        send: sinon.stub().resolves('ok')
       },
-      content: 'coc noskill',
-      replyText: null,
-      reply: function(text) {
-        this.replyText = text;
-      }
+      channel: {
+        guild: {
+          id: 'test'
+        }
+      },
+      content: 'coc missing',
+      reply: sinon.stub().resolves('ok')
     };
     try {
-      await skillDefinition(msg, 'coc', skillDefinitions);
-      msg.author.sendText.should.equal('invalid command');
+      const command = new SkillDefinition('coc', msg);
+      await command.do();
+      expect(msg.author.send).to.be.ok;
+      const expectedText = 'invalid command';
+      expect(msg.author.send.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
-  });
-
-  after(async function () {
-    // nothing to do
   });
 });
 

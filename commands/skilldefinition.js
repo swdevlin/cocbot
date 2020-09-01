@@ -1,12 +1,21 @@
-const skillDefinition = async (msg, prefix, skillDefinitions) => {
-  const text = msg.content.substring(prefix.length).trim().toLowerCase();
-  if (text in skillDefinitions) {
-    let response = skillDefinitions[text];
-    response = `**${text}** ` + response;
-    await msg.reply(response);
-  } else {
-    await msg.author.send('invalid command');
-  }
-};
+const BaseCommand = require("./base");
+const {skillDefinitions} = require("../skills");
 
-exports.skillDefinition = skillDefinition;
+class SkillDefinition extends BaseCommand {
+
+  async do() {
+    await super.do();
+    if (this.commandText in skillDefinitions) {
+      let response = skillDefinitions[this.commandText];
+      response = `**${this.commandText}** ` + response;
+      await this.msg.reply(response);
+    } else {
+      await this.msg.author.send('invalid command');
+    }
+  }
+
+}
+
+SkillDefinition.command = null;
+
+module.exports = SkillDefinition;

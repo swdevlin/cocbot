@@ -1,0 +1,21 @@
+const Roll = require('./commands/roll');
+const BonusRoll = require('./commands/bonusroll');
+const DoubleBonusRoll = require('./commands/doublebonusroll');
+const PenaltyRoll = require('./commands/penaltyroll');
+const DoublePenaltyRoll = require('./commands/doublepenaltyroll');
+const Help = require('./commands/help');
+const GroupSkillCheck = require('./commands/groupskillcheck');
+const MySkills = require('./commands/myskills');
+const SetSkill = require('./commands/setskill');
+const Skills = require('./commands/skills');
+
+module.exports.Roll = Roll;
+module.exports.BonusRoll = BonusRoll;
+module.exports.DoubleBonusRoll = DoubleBonusRoll;
+module.exports.PenaltyRoll = PenaltyRoll;
+module.exports.DoublePenaltyRoll = DoublePenaltyRoll;
+module.exports.Help = Help;
+module.exports.GroupSkillCheck = GroupSkillCheck;
+module.exports.MySkills = MySkills;
+module.exports.SetSkill = SetSkill;
+module.exports.Skills = Skills;

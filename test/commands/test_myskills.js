@@ -1,15 +1,13 @@
-const path = require('path');
-
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-
 const chai = require('chai');
 chai.should();
-
-const {mySkills} = require("../../commands/myskills");
+const expect = chai.expect;
+const sinon = require('sinon');
 
 const db = require('../../db');
 
-describe('mySkills', function () {
+const MySkills = require("../../commands/myskills");
+
+describe('MySkills', function () {
 
   before(async function () {
     const client = await db.getClient();
@@ -30,22 +28,24 @@ describe('mySkills', function () {
     let msg = {
       author: {
         id: 'user1',
-        send: function (text) {
-          this.sendText = text;
-        },
-        sendText: null,
+        send: sinon.stub().resolves('ok')
       },
       channel: {
         guild: {
           id: 'test'
         }
       },
+      content: 'coc myskills'
     };
     try {
-      await mySkills(msg);
-      msg.author.sendText.should.equal('skill 1 40, skill 2 50, skill 4 70');
+      const command = new MySkills('coc', msg)
+      await command.do();
+      expect(msg.author.send.called).to.be.ok;
+      const expectedText = 'skill 1 40, skill 2 50, skill 4 70';
+      expect(msg.author.send.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 
@@ -53,22 +53,24 @@ describe('mySkills', function () {
     let msg = {
       author: {
         id: 'user4',
-        send: function (text) {
-          this.sendText = text;
-        },
-        sendText: null,
+        send: sinon.stub().resolves('ok')
       },
       channel: {
         guild: {
           id: 'test'
         }
       },
+      content: 'coc myskills'
     };
     try {
-      await mySkills(msg);
-      msg.author.sendText.should.equal('no skills registered');
+      const command = new MySkills('coc', msg)
+      await command.do();
+      expect(msg.author.send.called).to.be.ok;
+      const expectedText = 'no skills registered';
+      expect(msg.author.send.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 
@@ -76,22 +78,25 @@ describe('mySkills', function () {
     let msg = {
       author: {
         id: 'user1',
-        send: function (text) {
-          this.sendText = text;
-        },
-        sendText: null,
+        send: sinon.stub().resolves('ok')
       },
       channel: {
         guild: {
           id: 'test2'
         }
       },
+      content: 'coc myskills'
     };
+
     try {
-      await mySkills(msg);
-      msg.author.sendText.should.equal('no skills registered');
+      const command = new MySkills('coc', msg)
+      await command.do();
+      expect(msg.author.send.called).to.be.ok;
+      const expectedText = 'no skills registered';
+      expect(msg.author.send.calledWith(expectedText)).to.be.ok;
     } catch(err) {
       console.log(err);
+      expect(false).to.be.ok;
     }
   });
 
@@ -102,6 +107,6 @@ describe('mySkills', function () {
     } catch(err) {
       console.log(err);
     }
-    });
+  });
 });
 

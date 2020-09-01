@@ -50,8 +50,9 @@ const skillCheck = (score, bonus_dice, penalty_dice) => {
 
   return {
     roll: roll,
+    dice: diceRolls,
     result: computeResult(score, roll)
-  }
+  };
 };
 
 exports.bonusRoll = bonusRoll;
