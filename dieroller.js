@@ -1,22 +1,6 @@
 const Random = require("random-js").Random;
 const random = new Random();
 
-const skillCheck = (score, bonus_dice, penalty_dice) => {
-  let roll;
-  let diceRolls = rolls(bonus_dice, penalty_dice);
-  if (bonus_dice.length > penalty_dice.length)
-    roll = bonusRoll(diceRolls);
-  else if (bonus_dice.length < penalty_dice.length)
-    roll = penaltyRoll(diceRolls);
-  else
-    roll = diceRolls[0];
-
-  return {
-    roll: roll,
-    result: computeResult(score, roll)
-  }
-};
-
 const computeResult = (score, roll) => {
   const hard = score / 2;
   const extreme = score / 5;
@@ -52,6 +36,22 @@ const rolls = (bonusDice, penaltyDice) => {
   for (let i=0; i< diff; i++)
     rolls.push(random.die(100));
   return rolls;
+};
+
+const skillCheck = (score, bonus_dice, penalty_dice) => {
+  let roll;
+  let diceRolls = rolls(bonus_dice, penalty_dice);
+  if (bonus_dice.length > penalty_dice.length)
+    roll = bonusRoll(diceRolls);
+  else if (bonus_dice.length < penalty_dice.length)
+    roll = penaltyRoll(diceRolls);
+  else
+    roll = diceRolls[0];
+
+  return {
+    roll: roll,
+    result: computeResult(score, roll)
+  }
 };
 
 exports.bonusRoll = bonusRoll;

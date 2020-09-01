@@ -6,7 +6,7 @@ const {
   parseCommand, determineCommand,
   standardRoll, reload,
   groupCheck, bonusRoll,
-  penaltyRoll, mySkills
+  penaltyRoll, mySkills, cocBotHelp
 } = require('../commandparser');
 
 describe('Determine Command', function () {
@@ -34,6 +34,11 @@ describe('Determine Command', function () {
     it('group luck check', function () {
       let res = determineCommand('group luck');
       res.should.eql(groupCheck);
+    });
+
+    it('should support help', function () {
+      let res = determineCommand('help');
+      res.should.eql(cocBotHelp);
     });
 
     it('group any skill not supported', function () {

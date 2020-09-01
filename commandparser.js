@@ -42,6 +42,10 @@ const reload = (postedText) => {
     return {command: 'reload', parameters: {}};
 };
 
+const cocBotHelp = (postedText) => {
+    return {command: 'help', parameters: {}};
+};
+
 const mySkills = (postedText) => {
     return {command: 'myskills', parameters: {}};
 };
@@ -56,6 +60,8 @@ const determineCommand = (postedText) => {
         return groupCheck;
     else if (lowerText.startsWith('reload'))
         return reload;
+    else if (lowerText.startsWith('help'))
+        return cocBotHelp;
     else if (lowerText.startsWith('s '))
         return standardRoll;
     else if (lowerText.startsWith('b '))
@@ -122,3 +128,4 @@ exports.bonusRoll = bonusRoll;
 exports.penaltyRoll = penaltyRoll;
 exports.reload = reload;
 exports.mySkills = mySkills;
+exports.cocBotHelp = cocBotHelp;

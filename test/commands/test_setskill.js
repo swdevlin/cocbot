@@ -45,6 +45,28 @@ describe('setSkill', function () {
     }
   });
 
+  it('should report an error if score is not a defined', async function () {
+    const skillName = 'test skill';
+    const command = {
+      parameters: {skillName: skillName, score: null}
+    };
+    const guildId = 'test';
+    const userId = 'user5;'
+    try {
+      const response = await setSkill(guildId, userId, command);
+      response.should.equal('Skill must have an integer score');
+      const sql = 'select 1 from investigator_skill where guild_id = $1 and user_id = $2 and skill_name = $3';
+      try {
+        const res = await db.query( sql, [guildId, userId, skillName] );
+        (res.rows.length === 0).should.be.true;
+      } catch(err) {
+        console.log(err);
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  });
+
   after(async function () {
     const sql = 'delete from investigator_skill where guild_id = $1';
     try {

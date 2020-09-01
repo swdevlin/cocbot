@@ -7,6 +7,7 @@ const databasePool = new Pool();
 const {skillCheck} = require('./dieroller');
 
 const Discord = require('discord.js');
+const {cocBotHelp} = require("./commands/help");
 const {setSkill} = require("./commands/setskill");
 const {skillDefinition} = require("./commands/skilldefinition");
 const {groupSkillCheck} = require("./commands/groupskillcheck");
@@ -41,6 +42,9 @@ discordClient.on('message', async msg => {
         if (command.command === 'set') {
             const response = await setSkill(guild_id, author_id, command);
             await msg.reply(response);
+        } else if (command.command === 'help') {
+            const response = await cocBotHelp(command);
+            await msg.author.send(response);
         } else if (command.command === 'myskills') {
             await mySkills(msg);
         } else if (command.command === 'roll') {
